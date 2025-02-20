@@ -1,9 +1,4 @@
 <?php
-
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
-
 /******************** insert main menu services ************************/ 
 add_action('wp_ajax_insert_main_menu_services', 'insert_main_menu_services_callback');
 add_action('wp_ajax_nopriv_insert_main_menu_services', 'insert_main_menu_services_callback');
@@ -599,13 +594,6 @@ function update_dishes_callback()
 
 				if ($existing_data) 
 				{
-					// Update dish_status to false
-					// $result = $wpdb->update(
-					// 	$trion_other_menu_dish_meta,
-					// 	array('other_dish_status' => 'false'),
-					// 	array('id' => $existing_data['id'])
-					// );
-
                      // Delete the row from $trion_other_menu_dish_meta
                     $result = $wpdb->delete(
                         $trion_other_menu_dish_meta,
@@ -614,9 +602,7 @@ function update_dishes_callback()
 
                     if($result !== false)
                     {
-                        // echo $result;
                         $response = array('success' => true);
-                        // print_r($response); 
                     }
                     else
                     {
@@ -740,10 +726,6 @@ function update_dishes_callback()
 				}
     		}
 		}
-        // else
-        // {
-		//     echo "asdasd";
-		// }
          /************* unchecked services data sec end  *********************/
 
 
@@ -762,7 +744,6 @@ function update_dishes_callback()
             'dish_status' => 'true',
             'daily_dish_status' => 'true',
             'parent_service' => $serialized_services
-            //'parent_service' => $selected_services
         );
         $where = array('id' => $dishes_id);
         
@@ -1158,7 +1139,6 @@ function update_menus_callback()
         $update_menu_id = $_POST['update_menu_id'];  
         
          // Check if the category slug is 'special'
-         //$cat_items = $wpdb->get_row($wpdb->prepare("SELECT * FROM $cat_table_name WHERE slug = %s", 'special'));
          $cat_items = $wpdb->get_row($wpdb->prepare("SELECT * FROM $cat_table_name WHERE slug IN (%s, %s, %s)", array('daily','special', 'other-cat')));
 
         if ($cat_items && isset($_POST['update_menu_price'])) 
@@ -1580,8 +1560,6 @@ function delete_service_special_callback()
     wp_die();
 }
 
-
-/***************** insert/update special services ****************/ 
 /***************** insert/update special services ****************/ 
 add_action('wp_ajax_insert_special_service_dishes', 'insert_special_service_dishes_callback');
 add_action('wp_ajax_nopriv_insert_special_service_dishes', 'insert_special_service_dishes_callback');
@@ -1601,12 +1579,6 @@ function insert_special_service_dishes_callback()
         
         $table_name = $wpdb->prefix . 'trion_special_service_tbl_dish_meta'; 
         $service_table = $wpdb->prefix . 'trion_service_tbl_meta'; 
-
-        // $result = $wpdb->get_row(
-        //     $wpdb->prepare(
-        //         "select * from $table_name WHERE dish_meta_value = $special_dish_id AND service_id = $special_service_id AND special_menu_id = $special_menu_id",
-        //     ), ARRAY_A
-        // );
 
         $error_response = '';
         $result = $wpdb->get_row(
@@ -1658,7 +1630,6 @@ function insert_special_service_dishes_callback()
                 'dish_meta_value' => $special_dish_id,
                 'dish_status' => 'false',
             );
-            // $wpdb->insert($table_name, $data, $format);
             $wpdb->insert($table_name, $data);
         }
 
@@ -1773,70 +1744,6 @@ function update_service_dishes_callback()
     wp_send_json($response);
     wp_die();
 }
-
-/******************** insert other nenu dishes ***********************/ 
-// add_action('wp_ajax_insert_other_menu_dishes', 'insert_other_menu_dishes_callback');
-// add_action('wp_ajax_nopriv_insert_other_menu_dishes', 'insert_other_menu_dishes_callback');
-// function insert_other_menu_dishes_callback()
-// {
-//     global $wpdb;
-//     if(isset($_POST['other_menu_id']) && isset( $_POST['other_dish_id']))
-//     {
-//         $other_menu_id = $_POST['other_menu_id'];
-//         $other_dish_id = $_POST['other_dish_id'];
-//         $other_dish_meta_key = '_other_dish';
-    
-//         $table_name = $wpdb->prefix . 'trion_other_menu_dish_meta'; 
-
-//          // Check if the combination of other_menu_id and other_dish_id already exists
-//          $existing_data = $wpdb->get_row(
-//             $wpdb->prepare(
-//                 "SELECT * FROM $table_name WHERE other_menu_id = %d AND other_dish_meta_value = %d",
-//                 $other_menu_id,
-//                 $other_dish_id
-//             ),
-//             ARRAY_A
-//         );
-
-//         if ($existing_data) 
-//         {
-//             // If the combination already exists, update the other_dish_status to 'true'
-//             $result = $wpdb->update(
-//                 $table_name,
-//                 array('other_dish_status' => 'true'),
-//                 array('id' => $existing_data['id'])
-//             );
-
-//             if ($result !== false) {
-//                 $response = array('success' => true, 'message' => 'Data updated successfully.');
-//             } else {
-//                 $response = array('success' => false, 'message' => 'Error updating data.');
-//             }
-//         } 
-//         else 
-//         {
-//             // If the combination doesn't exist, insert a new record
-//             $data = array(
-//                 'other_menu_id' => $other_menu_id,
-//                 'other_dish_meta_key' => $other_dish_meta_key,
-//                 'other_dish_meta_value' => $other_dish_id,
-//                 'other_dish_status' => 'true',
-//             );
-//             $wpdb->insert($table_name, $data);
-
-//             if ($wpdb->last_error) {
-//                 $response = array('success' => false, 'message' => 'Error inserting data into the table.');
-//             } else {
-//                 $response = array('success' => true, 'message' => 'Data inserted successfully.');
-//             }
-//         }
-
-//         // Send JSON response
-//         wp_send_json($response);
-//         wp_die();
-//     }
-// }
-
 
 /***************** insert other menu dishes ************************/
 add_action('wp_ajax_insert_other_menu_dishes', 'insert_other_menu_dishes_callback');
@@ -2134,9 +2041,6 @@ add_action('wp_ajax_save_dish_drag_drop', 'save_dish_drag_drop_callback');
 add_action('wp_ajax_nopriv_save_dish_drag_drop', 'save_dish_drag_drop_callback');
 function save_dish_drag_drop_callback()
 {
-    // ini_set('display_errors', 1);
-    // ini_set('display_startup_errors', 1);
-    // error_reporting(E_ALL);
 
     global $wpdb;
     $main_menu_dish_table = $wpdb->prefix . 'trion_main_service_tbl_dish_meta'; 
@@ -2287,9 +2191,6 @@ function save_drag_drop_other_dish_callback()
             }
         
         }
-
-        // wp_send_json($response);
-        // wp_die();
     }
 }
 
